@@ -37,12 +37,12 @@ func main() {
 		panic(err)
 	}
 
-	factory := informers.NewFilteredSharedInformerFactory(clientset, 0, "paas", func(opt *metav1.ListOptions) {
+	factory := informers.NewFilteredSharedInformerFactory(clientset, 0, "default", func(opt *metav1.ListOptions) {
 		opt.LabelSelector = "app"
 		//opt.LabelSelector = "app=applabel"
 	})
 	// if you want to get all pods in namespace
-	//factory := informers.NewFilteredSharedInformerFactory(clientset, 0, "paas", func(opt *v1.ListOptions) {})
+	//factory := informers.NewFilteredSharedInformerFactory(clientset, 0, "default", func(opt *v1.ListOptions) {})
 	// if you want to get all namespace
 	//factory := informers.NewSharedInformerFactory(clientset, 0)
 

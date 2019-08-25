@@ -23,15 +23,15 @@ func TestFakeClient(t *testing.T) {
 	client := fake.NewSimpleClientset()
 
 	// We will create an informer that writes added pods to a channel.
-	objs := make(chan *v1.Pod, 1)
+	objs := make(chan metav1.Object, 1)
 
 	informers := informers.NewSharedInformerFactory(client, 0)
 	podInformer := informers.Core().V1().Pods().Informer()
 
 	podInformer.AddEventHandler(&cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			Obj := obj.(*v1.Pod)
-			t.Logf("pod added: %s/%s", Obj.Namespace, Obj.Name)
+			Obj := obj.(metav1.Object)
+			t.Logf("pod added: %s/%s", Obj.GetNamespace(), Obj.GetName())
 			objs <- Obj
 		},
 	})
@@ -54,7 +54,7 @@ func TestFakeClient(t *testing.T) {
 
 	select {
 	case obj := <-objs:
-		t.Logf("Got pod from channel: %s/%s", obj.Namespace, obj.Name)
+		t.Logf("Got pod from channel: %s/%s", obj.GetNamespace(), obj.GetName())
 	case <-time.After(wait.ForeverTestTimeout):
 		t.Error("Informer did not get the added pod")
 	}
